@@ -1,20 +1,22 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {useState} from 'react';
+import { StyleSheet, Text, View, TextInput } from 'react-native';
+import { PaperProvider } from 'react-native-paper';
+import TabBarComponent from './components/TabBar';
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>声途 启动！</Text>
-      <StatusBar style="auto" />
-    </View>
+    <PaperProvider>
+      <View style={styles.container}>
+        <TabBarComponent />
+        <StatusBar style="auto" />
+      </View>
+    </PaperProvider>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
