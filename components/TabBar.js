@@ -3,10 +3,9 @@ import { BottomNavigation } from 'react-native-paper';
 import ChatsComponent from './Chats';
 import Settings from './Settings';
 
-const ChatRoute = () => <ChatsComponent />;
 const SettingsRoute = () => <Settings />;
 
-const TabBarComponent = () => {
+const TabBarComponent = ({ navigation }) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'chat', title: '聊天', focusedIcon: 'chat-processing', unfocusedIcon: 'chat-processing-outline' },
@@ -14,7 +13,7 @@ const TabBarComponent = () => {
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
-    chat: ChatRoute,
+    chat: () => <ChatsComponent navigation={navigation} />,
     settings: SettingsRoute,
   });
 

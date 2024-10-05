@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { List } from 'react-native-paper';
 
-const ChatsComponent = () => {
+const ChatsComponent = ({ navigation }) => {
   return (
     <View
       style={styles.container}
@@ -23,12 +23,14 @@ const ChatsComponent = () => {
             description="今天我们来聊点什么呢？"
             left={props => <List.Icon {...props} icon="chat" />}
             right={props => <List.Icon {...props} icon="chevron-right" />}
+            onPress={() => navigation.navigate('Chat', { name: '听力大挑战' })}
           />
           <List.Item
             title="发音大挑战"
             description="准备好了吗？"
             left={props => <List.Icon {...props} icon="chat" />}
             right={props => <List.Icon {...props} icon="chevron-right" />}
+            onPress={() => navigation.navigate('Chat', { name: '发音大挑战' })}
           />
         </List.Section>
       </ScrollView>
