@@ -5,32 +5,25 @@ import { PaperProvider, Button } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabBarComponent from './components/TabBar';
+import ChatScreen from './components/ChatScreen';
 
 const Stack = createNativeStackNavigator();
 
 function HomeScreen({ navigation }) {
   return (
-    <PaperProvider>
-      <View style={styles.container}>
-        <TabBarComponent navigation={navigation} />
-        <StatusBar style="auto" />
-      </View>
-    </PaperProvider>
-  );
-}
-
-function ChatScreen() {
-  return (
     <View style={styles.container}>
+      <TabBarComponent navigation={navigation} />
+      <StatusBar style="auto" />
     </View>
   );
 }
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
+    <PaperProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
           name="Home"
           options={{ headerShown: false }}
           component={HomeScreen}
@@ -40,8 +33,9 @@ export default function App() {
           options={({ route }) => ({ title: route.params.name })}
           component={ChatScreen}
         />
-      </Stack.Navigator>
-    </NavigationContainer>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
   );
 }
 
