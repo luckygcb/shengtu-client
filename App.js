@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import React, {useState} from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { PaperProvider, Button } from 'react-native-paper';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { PaperProvider } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabBarComponent from './components/TabBar';
@@ -20,19 +20,23 @@ function HomeScreen({ navigation }) {
 
 export default function App() {
   return (
-    <PaperProvider>
+    <PaperProvider
+      theme={{
+        dark: false,
+      }}
+    >
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
-          name="Home"
-          options={{ headerShown: false }}
-          component={HomeScreen}
-        />
-        <Stack.Screen
-          name="Chat"
-          options={({ route }) => ({ title: route.params.name })}
-          component={ChatScreen}
-        />
+            name="Home"
+            options={{ headerShown: false }}
+            component={HomeScreen}
+          />
+          <Stack.Screen
+            name="Chat"
+            options={({ route }) => ({ title: route.params.name })}
+            component={ChatScreen}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     </PaperProvider>
