@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import { Icon } from 'react-native-paper';
 import { Audio } from 'expo-av';
+import Matts from './Matts';
+import Letter from './Letter';
 
 const ChatMessage = ({ message }) => {
   async function playRecording(uri) {
@@ -27,7 +29,25 @@ const ChatMessage = ({ message }) => {
   } else if (message.type === 'text') {
     return (
       <View style={[styles.messageItem, message.sender === 'user' ? styles.userMessage : styles.assistantMessage]}>
-        <Text style={styles.textMessage}>{message.text}</Text>
+        <Text style={[styles.textMessage, message.bold ? styles.boldText : {}]}>{message.text}</Text>
+      </View>
+    );
+  } else if (message.type === 'spell_messages') {
+    return (
+      <View style={[styles.messageItem, styles.assistantMessage]}>
+        <View style={styles.spellMessages}>
+          {message.messages.map((message, index) => (
+            <View key={index} style={styles.spellMessageItem}>
+              <View style={styles.spellLetters}>
+                {message.initialConsonant && <Letter letter={message.initialConsonant} />}
+                {message.vowels && <Letter letter={message.vowels} tone={message.tone} />}
+              </View>
+              <Matts>
+                <Text style={styles.spellWord}>{message.word}</Text>
+              </Matts>
+            </View>
+          ))}
+        </View>
       </View>
     );
   }
@@ -58,6 +78,24 @@ const styles = StyleSheet.create({
   userAudioMessage: {
     backgroundColor: '#987fe0',
   },
+  boldText: {
+    fontWeight: 'bold',
+  },
+  spellMessages: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    gap: 10,
+  },
+  spellMessageItem: {
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  spellLetters: {
+    flexDirection: 'row',
+  },
+  spellWord: {
+    fontSize: 16,
+  }
 });
 
 export default ChatMessage;

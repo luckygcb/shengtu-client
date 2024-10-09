@@ -17,13 +17,34 @@ export default function ChatScreen() {
     setInputMode(inputMode === 'text' ? 'audio' : 'text');
   };
 
+  const pushMessage = (message) => {
+    setMessages(prevMessages => [
+      {
+        id: prevMessages.length ? prevMessages[0].id + 1 : 0,
+        ...message,
+      },
+      ...prevMessages,
+    ]);
+  }
+
   const handleMessage = ({ type, message }) => {
     console.log('receive message', type, message);
-    if (type === 'tutor_message') {
-      setMessages(prevMessages => [
-        { id: Date.now().toString(), sender: 'assistant', type: 'text', text: message.text },
-        ...prevMessages,
-      ]);
+    if (message.text) {
+      pushMessage({ sender: 'assistant', type: 'text', text: message.text });
+    }
+
+    if (message.expectedMessages) {
+      pushMessage({ sender: 'assistant', type: 'spell_messages', messages: message.expectedMessages });
+    }
+
+    if (message.messages) {
+      pushMessage({ sender: 'assistant', type: 'text', text: '你的声音听起来像: ', bold: true });
+      pushMessage({ sender: 'assistant', type: 'spell_messages', messages: message.messages });
+    }
+
+    if (message.suggestions) {
+      pushMessage({ sender: 'assistant', type: 'text', text: '调整建议: ', bold: true });
+      pushMessage({ sender: 'assistant', type: 'text', text: message.suggestions });
     }
   }
 
@@ -41,11 +62,7 @@ export default function ChatScreen() {
     if (inputText.trim()) {
       console.log('Sending message:', inputText);
       setInputText('');
-      setMessages(prevMessages => [
-        { id: Date.now().toString(), sender: 'user', type: 'text', text: inputText },
-        ...prevMessages,
-      ]);
-
+      pushMessage({ sender: 'user', type: 'text', text: inputText });
       sendUpwardMessage(UpwardMessageType.STUDENT_MESSAGE, new StudentMessage({
         text: inputText,
       }));
