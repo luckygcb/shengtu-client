@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Pressable, StyleSheet, FlatList } from 'react-native';
+import { View, StyleSheet, FlatList } from 'react-native';
 import { Button, Icon, TextInput } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import ChatMessage from './ChatMessage';
+import { useWebSocket } from '../hooks/useWebSocket';
+import { UpwardMessageType, AudioMessage, StudentMessage } from '../proto/upward_pb';
 
 export default function ChatScreen() {
 
@@ -14,6 +16,18 @@ export default function ChatScreen() {
   const toggleInputMode = () => {
     setInputMode(inputMode === 'text' ? 'audio' : 'text');
   };
+
+  const handleMessage = ({ type, message }) => {
+    console.log('receive message', type, message);
+    if (type === 'tutor_message') {
+      setMessages(prevMessages => [
+        { id: Date.now().toString(), sender: 'assistant', type: 'text', text: message.text },
+        ...prevMessages,
+      ]);
+    }
+  }
+
+  const { sendUpwardMessage } =  useWebSocket(handleMessage);
 
   useEffect(() => {
     return () => {
@@ -31,6 +45,10 @@ export default function ChatScreen() {
         { id: Date.now().toString(), sender: 'user', type: 'text', text: inputText },
         ...prevMessages,
       ]);
+
+      sendUpwardMessage(UpwardMessageType.STUDENT_MESSAGE, new StudentMessage({
+        text: inputText,
+      }));
     }
   };
 
@@ -67,6 +85,11 @@ export default function ChatScreen() {
       { id: Date.now().toString(), sender: 'user', type: 'audio', uri: uri },
       ...prevMessages,
     ]);
+
+    sendUpwardMessage(UpwardMessageType.AUDIO_MESSAGE, new AudioMessage({
+      // TODO: 获取到音频数据
+      audioData: uri,
+    }));
   }
 
   const renderMessage = ({ item }) => {

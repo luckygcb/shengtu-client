@@ -1,0 +1,34 @@
+
+syntax = "proto3";
+
+package echo_journey.downward;
+
+enum DownwardMessageType {
+    UNKNOWN = 0;
+    TUTOR_MESSAGE = 1;
+    WORD_CORRECT_MESSAGE = 2;
+    SENTENCE_CORRECT_MESSAGE = 3;
+}
+
+message DownwardMessage {
+    DownwardMessageType type = 1;
+    bytes payload = 2;
+}
+
+message TutorMessage {
+    string text = 1;
+    repeated WordCorrectMessage expected_messages = 2;
+}
+
+message WordCorrectMessage {
+    string word = 1;
+    string initial_consonant = 2;
+    string vowels = 3;
+    int32 tone = 4;
+}
+
+message SentenceCorrectMessage {
+    repeated WordCorrectMessage expected_messages = 1;
+    repeated WordCorrectMessage messages = 2;
+    string suggestions = 3;
+}
