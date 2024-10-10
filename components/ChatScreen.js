@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
 import { Button, Icon, TextInput } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import ChatMessage from './ChatMessage';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { UpwardMessageType, AudioMessage, StudentMessage } from '../proto/upward_pb';
+import { blobUrlToUint8Array } from '../utils/binary';
 
 export default function ChatScreen() {
 
@@ -12,6 +13,7 @@ export default function ChatScreen() {
   const [inputText, setInputText] = useState('');
   const [recording, setRecording] = useState();
   const [messages, setMessages] = useState([]);
+  const expectedSentenceRef = useRef('');
 
   const toggleInputMode = () => {
     setInputMode(inputMode === 'text' ? 'audio' : 'text');
@@ -34,6 +36,7 @@ export default function ChatScreen() {
     }
 
     if (message.expectedMessages) {
+      expectedSentenceRef.current = message.expectedMessages.map(m => m.word).join('');
       pushMessage({ sender: 'assistant', type: 'spell_messages', messages: message.expectedMessages });
     }
 
@@ -96,17 +99,17 @@ export default function ChatScreen() {
     
     // Add the new recording to the messages list
     setMessages(prevMessages => [
-      // mock 助手回复
-      { id: Date.now().toString() + 2, sender: 'assistant', type: 'audio', uri: uri },
-      { id: Date.now().toString() + 1, sender: 'assistant', type: 'text', text: '请听好' },
       { id: Date.now().toString(), sender: 'user', type: 'audio', uri: uri },
       ...prevMessages,
     ]);
 
-    sendUpwardMessage(UpwardMessageType.AUDIO_MESSAGE, new AudioMessage({
-      // TODO: 获取到音频数据
-      audioData: uri,
-    }));
+    if (/blob:/.test(uri)) {
+      const uint8Array = await blobUrlToUint8Array(uri);
+      sendUpwardMessage(UpwardMessageType.AUDIO_MESSAGE, new AudioMessage({
+        audioData: uint8Array,
+        expectedSentence: expectedSentenceRef.current,
+      }));
+    }
   }
 
   const renderMessage = ({ item }) => {

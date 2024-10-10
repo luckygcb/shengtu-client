@@ -72,31 +72,5 @@ export function useWebSocket (onMessage) {
     });
   }
 
-  // mock message
-  useEffect(() => {
-    const mockMessage = new TutorMessage({
-      text: '你好，今天我们来学习如何正确发音。',
-      expectedMessages: [
-        {
-          word: '咖',
-          initialConsonant: 'k',
-          vowels: 'a',
-          tone: 1,
-        },
-        {
-          word: '啡',
-          initialConsonant: 'f',
-          vowels: 'ei',
-          tone: 2,
-        },
-      ],
-    });
-
-    onMessage?.({
-      type: 'tutor_message',
-      message: mockMessage,
-    });
-  }, []);
-
   return { socket, sendUpwardMessage, closeSocket };
 }
