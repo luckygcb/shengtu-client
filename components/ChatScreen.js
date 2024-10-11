@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, FlatList, Platform } from 'react-native';
+import { View, StyleSheet, FlatList, Pressable } from 'react-native';
 import { Button, Icon, TextInput, IconButton, Text } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import ChatMessage from './ChatMessage';
@@ -169,6 +169,7 @@ export default function ChatScreen() {
             labelStyle={styles.buttonText}
             onPressIn={startRecording}
             onPressOut={stopRecording}
+            onLongPress={() => {}}
           >
             按住说话
           </Button>
@@ -221,6 +222,7 @@ const styles = StyleSheet.create({
     userSelect: 'none',
   },
   buttonText: {
+    userSelect: 'none',
     paddingHorizontal: 50,
     color: 'white',
     fontSize: 16,
