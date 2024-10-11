@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, StyleSheet, FlatList } from 'react-native';
-import { Button, Icon, TextInput } from 'react-native-paper';
+import { Button, Icon, TextInput, IconButton } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import ChatMessage from './ChatMessage';
 import { useWebSocket } from '../hooks/useWebSocket';
@@ -161,9 +161,9 @@ export default function ChatScreen() {
             right={<TextInput.Icon icon="send" color="rgba(99,106,232,1)" onPress={handleSendText} />}
           />
         )}
-        <Button
+        <IconButton
           style={styles.switchButton}
-          icon={() => <Icon size={30} color="rgba(99,106,232,1)" source={inputMode === 'text' ? "microphone-outline" : "keyboard-outline"} />}
+          icon={() => <Icon size={24} color="rgba(99,106,232,1)" source={inputMode === 'text' ? "microphone-outline" : "keyboard-outline"} />}
           onPress={toggleInputMode}
         />
       </View>
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     right: 0,
   },
   textInput: {
-    width: '60%',
+    width: '67%',
     height: 40,
     borderRadius: 5,
     backgroundColor: 'rgba(243,244,246,1)',
