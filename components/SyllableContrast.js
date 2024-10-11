@@ -1,7 +1,7 @@
 import React from 'react';
 import { Text, View, StyleSheet } from 'react-native';
 
-const Settings = () => {
+const SyllableContrast = () => {
   return (
     <View
       style={styles.container}
@@ -9,7 +9,7 @@ const Settings = () => {
       <Text
         style={styles.text}
       >
-        Settings
+        开发中，敬请期待
       </Text>
     </View>
   );
@@ -27,4 +27,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Settings;
+export default SyllableContrast;

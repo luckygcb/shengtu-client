@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
 import { BottomNavigation } from 'react-native-paper';
 import ChatsComponent from './Chats';
-import Settings from './Settings';
-
-const SettingsRoute = () => <Settings />;
+import SyllableContrast from './SyllableContrast';
 
 const TabBarComponent = ({ navigation }) => {
   const [index, setIndex] = useState(0);
   const [routes] = useState([
     { key: 'chat', title: '聊天', focusedIcon: 'chat-processing', unfocusedIcon: 'chat-processing-outline' },
-    { key: 'settings', title: '设置', focusedIcon: 'account-settings', unfocusedIcon: 'account-settings-outline' },
+    { key: 'syllable_contrast', title: '音节对照', focusedIcon: 'compare', unfocusedIcon: 'compare' },
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
     chat: () => <ChatsComponent navigation={navigation} />,
-    settings: SettingsRoute,
+    syllable_contrast: () => <SyllableContrast />,
   });
 
   return (

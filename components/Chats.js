@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { List } from 'react-native-paper';
+import { List, Avatar } from 'react-native-paper';
 
 const ChatsComponent = ({ navigation }) => {
   return (
@@ -28,7 +28,10 @@ const ChatsComponent = ({ navigation }) => {
           <List.Item
             title="发音大挑战"
             description="准备好了吗？"
-            left={props => <List.Icon {...props} icon="chat" />}
+            style={{
+              paddingLeft: 24,
+            }}
+            left={props => <Avatar.Image size={44} source={require('../assets/images/assistant.jpg')} />}
             right={props => <List.Icon {...props} icon="chevron-right" />}
             onPress={() => navigation.navigate('Chat', { name: '发音大挑战' })}
           />

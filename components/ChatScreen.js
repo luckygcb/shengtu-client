@@ -14,15 +14,22 @@ export default function ChatScreen() {
   const [recording, setRecording] = useState();
   const [messages, setMessages] = useState([]);
   const expectedSentenceRef = useRef('');
+  const currentRoundRef = useRef([]);
 
   const toggleInputMode = () => {
     setInputMode(inputMode === 'text' ? 'audio' : 'text');
   };
 
   const pushMessage = (message) => {
+    if (message.sender === 'assistant') {
+      currentRoundRef.current.push(message);
+    } else {
+      currentRoundRef.current = [];
+    }
     setMessages(prevMessages => [
       {
         id: prevMessages.length ? prevMessages[0].id + 1 : 0,
+        showAvatar: message.sender === 'user' || currentRoundRef.current.length === 1,
         ...message,
       },
       ...prevMessages,
@@ -36,8 +43,11 @@ export default function ChatScreen() {
     }
 
     if (message.expectedMessages) {
-      expectedSentenceRef.current = message.expectedMessages.map(m => m.word).join('');
-      pushMessage({ sender: 'assistant', type: 'spell_messages', messages: message.expectedMessages });
+      const nonEmptyMessages = message.expectedMessages.filter(m => m.word.trim());
+      if (nonEmptyMessages.length > 0) {
+        expectedSentenceRef.current = nonEmptyMessages.map(m => m.word).join('');
+        pushMessage({ sender: 'assistant', type: 'spell_messages', messages: nonEmptyMessages });
+      }
     }
 
     if (message.messages) {
@@ -80,9 +90,13 @@ export default function ChatScreen() {
           allowsRecordingIOS: true,
           playsInSilentModeIOS: true,
         });
-        const { recording } = await Audio.Recording.createAsync(
-          Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
-        );
+        const { recording } = await Audio.Recording.createAsync({
+          ...Audio.RecordingOptionsPresets.HIGH_QUALITY,
+          web: {
+            mimeType: 'audio/webm',
+            bitsPerSecond: 16000,
+          },
+        });
         setRecording(recording);
       }
     } catch (err) {
@@ -98,17 +112,16 @@ export default function ChatScreen() {
     console.log('Recording stopped and stored at', uri);
     
     // Add the new recording to the messages list
-    setMessages(prevMessages => [
-      { id: Date.now().toString(), sender: 'user', type: 'audio', uri: uri },
-      ...prevMessages,
-    ]);
+    pushMessage({ id: Date.now().toString(), sender: 'user', type: 'audio', uri: uri });
 
     if (/blob:/.test(uri)) {
       const uint8Array = await blobUrlToUint8Array(uri);
-      sendUpwardMessage(UpwardMessageType.AUDIO_MESSAGE, new AudioMessage({
+      const audioMessage = new AudioMessage({
         audioData: uint8Array,
         expectedSentence: expectedSentenceRef.current,
-      }));
+      });
+      console.log('Sending audio message:', audioMessage);
+      sendUpwardMessage(UpwardMessageType.AUDIO_MESSAGE, audioMessage);
     }
   }
 

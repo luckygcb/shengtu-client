@@ -8,7 +8,7 @@ export function useWebSocket (onMessage) {
 
   useEffect(() => {
     const sessionId = uuidv4();
-    const ws = new WebSocket(`//alibjhtest-real-char1-vm:8009/ws/talk/${sessionId}`);
+    const ws = new WebSocket(`//echo_journey.yuanfudao.biz/echo-journey/ws/talk/${sessionId}`);
     setSocket(ws);
 
     ws.addEventListener('message', handleProtoMessage);

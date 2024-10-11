@@ -1,11 +1,32 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { Icon } from 'react-native-paper';
+import { Icon, Avatar } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import Matts from './Matts';
 import Letter from './Letter';
 
 const ChatMessage = ({ message }) => {
+  return (
+    <View style={[styles.messageItem, message.sender === 'user' ? styles.userMessage : styles.assistantMessage]}>
+      <View style={styles.avatarContainer}>
+        {message.showAvatar ? (
+          message.sender === 'assistant' ? (
+            <Avatar.Image size={28} source={require('../assets/images/assistant.jpg')} />
+          ) : (
+            <Icon source="account" size={28} />
+          )
+        ) : null}
+      </View>
+      <View style={[styles.messageContent, {
+        flexDirection: message.sender === 'assistant' ? 'row' : 'row-reverse'
+      }]}>
+        <ChatMessageContent message={message} />
+      </View>
+    </View>
+  )
+}
+
+const ChatMessageContent = ({ message }) => {
   async function playRecording(uri) {
     try {
       const { sound } = await Audio.Sound.createAsync({ uri });
@@ -17,37 +38,31 @@ const ChatMessage = ({ message }) => {
 
   if (message.type === 'audio') {
     return (
-      <View style={[styles.messageItem, message.sender === 'user' ? styles.userMessage : styles.assistantMessage]}>
-        <Pressable 
-          style={[styles.audioMessage, message.sender === 'user' ? styles.userAudioMessage : styles.assistantAudioMessage]}
-          onPress={() => playRecording(message.uri)}
-        >
-          <Icon source="volume-high" size={24} color={message.sender === 'user' ? '#fff' : '#000'} />
-        </Pressable>
-      </View>
+      <Pressable 
+        style={[styles.audioMessage, message.sender === 'user' ? styles.userAudioMessage : styles.assistantAudioMessage]}
+        onPress={() => playRecording(message.uri)}
+      >
+        <Icon source="volume-high" size={24} color={message.sender === 'user' ? '#fff' : '#000'} />
+      </Pressable>
     );
   } else if (message.type === 'text') {
     return (
-      <View style={[styles.messageItem, message.sender === 'user' ? styles.userMessage : styles.assistantMessage]}>
-        <Text style={[styles.textMessage, message.bold ? styles.boldText : {}]}>{message.text}</Text>
-      </View>
+      <Text style={[styles.textMessage, message.bold ? styles.boldText : {}]}>{message.text}</Text>
     );
   } else if (message.type === 'spell_messages') {
     return (
-      <View style={[styles.messageItem, styles.assistantMessage]}>
-        <View style={styles.spellMessages}>
-          {message.messages.map((message, index) => (
-            <View key={index} style={styles.spellMessageItem}>
-              <View style={styles.spellLetters} >
-                {message.initialConsonant ? <Letter letter={message.initialConsonant} /> : null}
-                {message.vowels ? <Letter letter={message.vowels} tone={message.tone} /> : null}
-              </View>
-              <Matts>
-                <Text style={styles.spellWord}>{message.word}</Text>
-              </Matts>
+      <View style={styles.spellMessages}>
+        {message.messages.map((message, index) => (
+          <View key={index} style={styles.spellMessageItem}>
+            <View style={styles.spellLetters} >
+              {message.initialConsonant ? <Letter letter={message.initialConsonant} /> : null}
+              {message.vowels ? <Letter letter={message.vowels} tone={message.tone} /> : null}
             </View>
-          ))}
-        </View>
+            <Matts>
+              <Text style={styles.spellWord}>{message.word}</Text>
+            </Matts>
+          </View>
+        ))}
       </View>
     );
   }
@@ -55,16 +70,26 @@ const ChatMessage = ({ message }) => {
 
 const styles = StyleSheet.create({
   messageItem: {
-    padding: 10,
     marginVertical: 5,
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    gap: 10,
+  },
+  avatarContainer: {
+    width: 28,
+    height: 28,
+  },
+  messageContent: {
+    paddingTop: 4,
+    flex: 1,
   },
   assistantMessage: {
     flexDirection: 'row',
+    paddingRight: 54
   },
   userMessage: {
     flexDirection: 'row-reverse',
+    paddingLeft: 54
   },
   audioMessage: {
     width: '30%',
