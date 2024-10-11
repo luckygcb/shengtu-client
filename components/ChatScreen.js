@@ -27,12 +27,12 @@ export default function ChatScreen() {
       currentRoundRef.current = [];
     }
     setMessages(prevMessages => [
+      ...prevMessages,
       {
         id: prevMessages.length ? prevMessages[0].id + 1 : 0,
         isNewRound: message.sender === 'user' || currentRoundRef.current.length === 1,
         ...message,
       },
-      ...prevMessages,
     ]);
   }
 
@@ -136,7 +136,6 @@ export default function ChatScreen() {
           data={messages}
           renderItem={renderMessage}
           keyExtractor={item => item.id}
-          inverted
         />
       </View>
       <View style={styles.buttonContainer}>
