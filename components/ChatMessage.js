@@ -7,9 +7,17 @@ import Letter from './Letter';
 
 const ChatMessage = ({ message }) => {
   return (
-    <View style={[styles.messageItem, message.sender === 'user' ? styles.userMessage : styles.assistantMessage]}>
+    <View
+      style={[
+        styles.messageItem,
+        message.sender === 'user' ? styles.userMessage : styles.assistantMessage,
+        {
+          marginTop: message.isNewRound ? 27 : 0,
+        }
+      ]}
+    >
       <View style={styles.avatarContainer}>
-        {message.showAvatar ? (
+        {message.isNewRound ? (
           message.sender === 'assistant' ? (
             <Avatar.Image size={28} source={require('../assets/images/assistant.jpg')} />
           ) : (
@@ -77,10 +85,10 @@ const styles = StyleSheet.create({
   },
   avatarContainer: {
     width: 28,
-    height: 28,
+    height: 44,
+    paddingVertical: 8
   },
   messageContent: {
-    paddingTop: 4,
     flex: 1,
   },
   assistantMessage: {
@@ -93,8 +101,11 @@ const styles = StyleSheet.create({
   },
   audioMessage: {
     width: '30%',
-    padding: 10,
+    height: 44,
     borderRadius: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
   },
   assistantAudioMessage: {
     backgroundColor: '#f3f4f6',
@@ -102,6 +113,9 @@ const styles = StyleSheet.create({
   },
   userAudioMessage: {
     backgroundColor: '#987fe0',
+  },
+  textMessage: {
+    paddingTop: 13,
   },
   boldText: {
     fontWeight: 'bold',

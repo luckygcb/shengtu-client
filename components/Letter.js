@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#9095a0',
     lineHeight: 0,
-    marginBottom: -8,
+    marginBottom: -5,
   },
 });
 
