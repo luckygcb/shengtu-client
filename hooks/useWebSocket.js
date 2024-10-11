@@ -2,13 +2,16 @@ import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { UpwardMessage } from '../proto/upward_pb';
 import { DownwardMessage, DownwardMessageType, TutorMessage, WordCorrectMessage, SentenceCorrectMessage } from '../proto/downward_pb';
+import { detectMobileOperatingSystem } from '../utils/os';
+
+const platform = detectMobileOperatingSystem() === 'iOS' ? 'ios' : 'android';
 
 export function useWebSocket (onMessage) {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     const sessionId = uuidv4();
-    const ws = new WebSocket(`//echo_journey.yuanfudao.biz/echo-journey/ws/talk/${sessionId}`);
+    const ws = new WebSocket(`//echo_journey.yuanfudao.biz/echo-journey/ws/talk/${sessionId}?platform=${platform}`);
     setSocket(ws);
 
     ws.addEventListener('message', handleProtoMessage);

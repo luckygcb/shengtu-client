@@ -113,6 +113,11 @@ export declare class WordCorrectMessage extends Message<WordCorrectMessage> {
    */
   tone: number;
 
+  /**
+   * @generated from field: string pinyin = 5;
+   */
+  pinyin: string;
+
   constructor(data?: PartialMessage<WordCorrectMessage>);
 
   static readonly runtime: typeof proto3;

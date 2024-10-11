@@ -50,6 +50,7 @@ export const WordCorrectMessage = /*@__PURE__*/ proto3.makeMessageType(
     { no: 2, name: "initial_consonant", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 3, name: "vowels", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 4, name: "tone", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 5, name: "pinyin", kind: "scalar", T: 9 /* ScalarType.STRING */ },
   ],
 );
 
