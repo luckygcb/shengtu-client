@@ -1,20 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, FlatList } from 'react-native';
-import { Button, Icon, TextInput, IconButton } from 'react-native-paper';
+import { View, StyleSheet, FlatList, Platform } from 'react-native';
+import { Button, Icon, TextInput, IconButton, Text } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import ChatMessage from './ChatMessage';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { UpwardMessageType, AudioMessage, StudentMessage } from '../proto/upward_pb';
 import { blobUrlToUint8Array } from '../utils/binary';
+import { detectMobileOperatingSystem } from '../utils/os';
 
+console.log(detectMobileOperatingSystem());
 export default function ChatScreen() {
 
   const [inputMode, setInputMode] = useState('text');
   const [inputText, setInputText] = useState('');
   const [recording, setRecording] = useState();
   const [messages, setMessages] = useState([]);
+  const [recordState, setRecordState] = useState('');
   const expectedSentenceRef = useRef('');
   const currentRoundRef = useRef([]);
+  const [permissionResponse, requestPermission] = Audio.usePermissions();
 
   const toggleInputMode = () => {
     setInputMode(inputMode === 'text' ? 'audio' : 'text');
@@ -83,30 +87,38 @@ export default function ChatScreen() {
   };
 
   async function startRecording() {
+    console.log('startRecording');
+    setRecordState('preparing');
     try {
-      const perm = await Audio.requestPermissionsAsync();
-      if (perm.status === "granted") {
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: true,
-          playsInSilentModeIOS: true,
-        });
-        const { recording } = await Audio.Recording.createAsync({
-          ...Audio.RecordingOptionsPresets.HIGH_QUALITY,
-          web: {
-            mimeType: 'audio/webm',
-            bitsPerSecond: 16000,
-          },
-        });
-        setRecording(recording);
+      if (permissionResponse.status !== 'granted') {
+        console.log('Requesting permission..');
+        await requestPermission();
       }
+
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+      const { recording } = await Audio.Recording.createAsync({
+        ...Audio.RecordingOptionsPresets.HIGH_QUALITY,
+        web: {
+          mimeType: detectMobileOperatingSystem() === 'iOS' ? 'audio/mp4' : 'audio/webm',
+          bitsPerSecond: 16000,
+        },
+      });
+      setRecording(recording);
+      setRecordState('recording');
     } catch (err) {
       console.error('Failed to start recording', err);
+      setRecordState(detectMobileOperatingSystem() + ': ' + err.message);
     }
   }
 
   async function stopRecording() {
+    console.log('stopRecording');
     if (!recording) return;
     setRecording(undefined);
+    setRecordState('');
     await recording.stopAndUnloadAsync();
     const uri = recording.getURI();
     console.log('Recording stopped and stored at', uri);
@@ -129,6 +141,15 @@ export default function ChatScreen() {
     return <ChatMessage message={item} />;
   };
 
+  const getStatusText = () => {
+    if (recordState === 'recording') {
+      return '松开结束';
+    } else if (recordState === 'preparing') {
+      return '录音准备中...';
+    }
+    return recordState;
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.messageContainer}>
@@ -138,6 +159,7 @@ export default function ChatScreen() {
           keyExtractor={item => item.id}
         />
       </View>
+      <Text style={styles.statusText}>{getStatusText()}</Text>
       <View style={styles.buttonContainer}>
         {inputMode === 'audio' ? (
           <Button
@@ -196,6 +218,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     justifyContent: 'center',
     alignItems: 'center',
+    userSelect: 'none',
   },
   buttonText: {
     paddingHorizontal: 50,
