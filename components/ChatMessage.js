@@ -122,6 +122,8 @@ const styles = StyleSheet.create({
   },
   textMessage: {
     paddingTop: 13,
+    fontSize: 14,
+    lineHeight: 22,
   },
   boldText: {
     fontWeight: 'bold',
