@@ -62,10 +62,16 @@ const ChatMessageContent = ({ message }) => {
       <View style={styles.spellMessages}>
         {message.messages.map((message, index) => (
           <View key={index} style={styles.spellMessageItem}>
-            <View style={styles.spellLetters} >
-              {message.initialConsonant ? <Letter letter={message.initialConsonant} /> : null}
-              {message.vowels ? <Letter letter={message.vowels} tone={message.tone} /> : null}
-            </View>
+            {
+              message.pinyin ? (
+                <Text style={styles.pinyin}>{message.pinyin}</Text>
+              ) : (
+                <View style={styles.spellLetters} >
+                  {message.initialConsonant ? <Letter letter={message.initialConsonant} /> : null}
+                  {message.vowels ? <Letter letter={message.vowels} tone={message.tone} /> : null}
+                </View> 
+              )
+            }
             <Matts>
               <Text style={styles.spellWord}>{message.word}</Text>
             </Matts>
@@ -128,6 +134,7 @@ const styles = StyleSheet.create({
   spellMessageItem: {
     flexDirection: 'column',
     alignItems: 'center',
+    flexWrap: 'wrap',
   },
   spellLetters: {
     flexDirection: 'row',

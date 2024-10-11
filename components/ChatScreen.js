@@ -33,7 +33,7 @@ export default function ChatScreen() {
     setMessages(prevMessages => [
       ...prevMessages,
       {
-        id: prevMessages.length ? prevMessages[0].id + 1 : 0,
+        id: prevMessages.length ? prevMessages[prevMessages.length - 1].id + 1 : 0,
         isNewRound: message.sender === 'user' || currentRoundRef.current.length === 1,
         ...message,
       },
