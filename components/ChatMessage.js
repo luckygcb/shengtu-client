@@ -60,20 +60,27 @@ const ChatMessageContent = ({ message }) => {
   } else if (message.type === 'spell_messages') {
     return (
       <View style={styles.spellMessages}>
-        {message.messages.map((message, index) => (
+        {message.messages.map((wordCorrectMessage, index) => (
           <View key={index} style={styles.spellMessageItem}>
             {
-              message.pinyin ? (
-                <Text style={styles.pinyin}>{message.pinyin}</Text>
+              wordCorrectMessage.pinyin ? (
+                <Text style={styles.pinyin}>{wordCorrectMessage.pinyin}</Text>
               ) : (
                 <View style={styles.spellLetters} >
-                  {message.initialConsonant ? <Letter letter={message.initialConsonant} /> : null}
-                  {message.vowels ? <Letter letter={message.vowels} tone={message.tone} /> : null}
+                  {wordCorrectMessage.initialConsonant ? <Letter letter={wordCorrectMessage.initialConsonant} /> : null}
+                  {wordCorrectMessage.vowels ? <Letter letter={wordCorrectMessage.vowels} tone={wordCorrectMessage.tone} /> : null}
                 </View> 
               )
             }
             <Matts>
-              <Text style={styles.spellWord}>{message.word}</Text>
+              <Text
+                style={[
+                  styles.spellWord,
+                  { color: wordCorrectMessage.isCorrect === false ? 'rgba(222,59,64,1)' : '#000' }
+                ]}
+              >
+                {wordCorrectMessage.word}
+              </Text>
             </Matts>
           </View>
         ))}

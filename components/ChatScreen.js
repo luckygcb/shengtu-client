@@ -31,6 +31,7 @@ export default function ChatScreen() {
     } else {
       currentRoundRef.current = [];
     }
+
     setMessages(prevMessages => [
       ...prevMessages,
       {
@@ -47,17 +48,27 @@ export default function ChatScreen() {
       pushMessage({ sender: 'assistant', type: 'text', text: message.text });
     }
 
-    if (message.expectedMessages) {
-      const nonEmptyMessages = message.expectedMessages.filter(m => m.word.trim());
-      if (nonEmptyMessages.length > 0) {
-        expectedSentenceRef.current = nonEmptyMessages.map(m => m.word).join('');
-        pushMessage({ sender: 'assistant', type: 'spell_messages', messages: nonEmptyMessages });
-      }
+    const expectedArticulation = message.expectedMessages?.filter(m => m.word.trim()) ?? [];
+    const actualArticulation = message.messages ?? [];
+
+    // 如果实际发音和预期发音长度相同，则检查每个字是否正确
+    if (actualArticulation.length > 1 &&  actualArticulation.length === expectedArticulation.length) {
+      expectedArticulation.forEach((e, index) => {
+        if (e.word !== actualArticulation[index].word) {
+          expectedArticulation[index].isCorrect = false;
+          actualArticulation[index].isCorrect = false;
+        }
+      });
+    }
+   
+    if (expectedArticulation.length) {
+      expectedSentenceRef.current = expectedArticulation.map(m => m.word).join('');
+      pushMessage({ sender: 'assistant', type: 'spell_messages', messages: expectedArticulation });
     }
 
-    if (message.messages) {
+    if (actualArticulation.length) {
       pushMessage({ sender: 'assistant', type: 'text', text: '你的声音听起来像: ', bold: true });
-      pushMessage({ sender: 'assistant', type: 'spell_messages', messages: message.messages });
+      pushMessage({ sender: 'assistant', type: 'spell_messages', messages: actualArticulation });
     }
 
     if (message.suggestions) {
@@ -161,7 +172,7 @@ export default function ChatScreen() {
     if (flatListRef.current) {
       flatListRef.current.scrollToEnd();
     }
-  }, [messages]);
+  }, [messages.length]);
 
   return (
     <View style={styles.container}>
