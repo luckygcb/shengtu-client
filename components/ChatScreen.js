@@ -44,7 +44,7 @@ export default function ChatScreen() {
 
       // 如果当前消息是用户消息，则推送一个 loading 消息
       if (newMessage.sender === 'user') {
-        result.push({ sender: 'assistant', type: 'loading', isNewRound: true, id: 'loading' });
+        result.push({ sender: 'assistant', type: 'loading', isNewRound: true, id: `loading-${newMessage.id}` });
       }
 
       return result;
