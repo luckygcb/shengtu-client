@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Icon, Avatar } from 'react-native-paper';
-import { Audio } from 'expo-av';
 import Matts from './Matts';
 import Letter from './Letter';
+import AudioMessage from './AudioMessage';
 
 const ChatMessage = ({ message }) => {
   return (
@@ -35,23 +35,10 @@ const ChatMessage = ({ message }) => {
 }
 
 const ChatMessageContent = ({ message }) => {
-  async function playRecording(uri) {
-    try {
-      const { sound } = await Audio.Sound.createAsync({ uri });
-      await sound.playAsync();
-    } catch (error) {
-      console.error('Failed to play recording', error);
-    }
-  }
 
   if (message.type === 'audio') {
     return (
-      <Pressable 
-        style={[styles.audioMessage, message.sender === 'user' ? styles.userAudioMessage : styles.assistantAudioMessage]}
-        onPress={() => playRecording(message.uri)}
-      >
-        <Icon source="volume-high" size={24} color={message.sender === 'user' ? '#fff' : '#000'} />
-      </Pressable>
+      <AudioMessage message={message} />
     );
   } else if (message.type === 'text') {
     return (
@@ -112,24 +99,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
     paddingLeft: 54
   },
-  audioMessage: {
-    width: '30%',
-    height: 44,
-    borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-  },
-  assistantAudioMessage: {
-    backgroundColor: '#f3f4f6',
-    flexDirection: 'row-reverse',
-  },
-  userAudioMessage: {
-    backgroundColor: '#987fe0',
-  },
   textMessage: {
     paddingTop: 13,
-    fontSize: 14,
+    fontSize: 16,
     lineHeight: 22,
   },
   boldText: {
