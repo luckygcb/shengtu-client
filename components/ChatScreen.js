@@ -151,6 +151,12 @@ export default function ChatScreen() {
     return recordState;
   }
 
+  const handleKeyPress = (event) => {
+    if (event.nativeEvent.key === 'Enter') {
+      handleSendText();
+    }
+  }
+
   useEffect(() => {
     if (flatListRef.current) {
       flatListRef.current.scrollToEnd();
@@ -189,6 +195,7 @@ export default function ChatScreen() {
             underlineColor='transparent'
             activeUnderlineColor='transparent'
             right={<TextInput.Icon icon="send" color="rgba(99,106,232,1)" onPress={handleSendText} />}
+            onKeyPress={handleKeyPress}
           />
         )}
         <IconButton
