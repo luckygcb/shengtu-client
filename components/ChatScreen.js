@@ -18,6 +18,7 @@ export default function ChatScreen() {
   const [recordState, setRecordState] = useState('');
   const expectedSentenceRef = useRef('');
   const currentRoundRef = useRef([]);
+  const flatListRef = useRef();
   const [permissionResponse, requestPermission] = Audio.usePermissions();
 
   const toggleInputMode = () => {
@@ -150,6 +151,12 @@ export default function ChatScreen() {
     return recordState;
   }
 
+  useEffect(() => {
+    if (flatListRef.current) {
+      flatListRef.current.scrollToEnd();
+    }
+  }, [messages]);
+
   return (
     <View style={styles.container}>
       <View style={styles.messageContainer}>
@@ -157,6 +164,7 @@ export default function ChatScreen() {
           data={messages}
           renderItem={renderMessage}
           keyExtractor={item => item.id}
+          ref={flatListRef}
         />
       </View>
       <Text style={styles.statusText}>{getStatusText()}</Text>

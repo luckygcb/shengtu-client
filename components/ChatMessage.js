@@ -129,9 +129,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   spellMessages: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     gap: 10,
+    flexWrap: 'wrap',
   },
   spellMessageItem: {
     flexDirection: 'column',
