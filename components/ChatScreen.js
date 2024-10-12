@@ -170,7 +170,10 @@ export default function ChatScreen() {
 
   useEffect(() => {
     if (flatListRef.current) {
-      flatListRef.current.scrollToEnd();
+      // 延时滚动，避免内容还没渲染完成
+      setTimeout(() => {
+        flatListRef.current.scrollToEnd();
+      }, 100);
     }
   }, [messages.length]);
 
