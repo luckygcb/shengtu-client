@@ -4,6 +4,7 @@ import { Icon, Avatar } from 'react-native-paper';
 import Matts from './Matts';
 import Letter from './Letter';
 import AudioMessage from './AudioMessage';
+import Loading from './Loading';
 
 const ChatMessage = ({ message }) => {
   return (
@@ -73,6 +74,12 @@ const ChatMessageContent = ({ message }) => {
         ))}
       </View>
     );
+  } else if (message.type === 'loading') {
+    return (
+      <View style={styles.loadingMessage}>
+        <Loading />
+      </View>
+    );
   }
 }
 
@@ -124,6 +131,9 @@ const styles = StyleSheet.create({
   },
   spellWord: {
     fontSize: 16,
+  },
+  loadingMessage: {
+    paddingTop: 15,
   }
 });
 

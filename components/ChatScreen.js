@@ -32,14 +32,23 @@ export default function ChatScreen() {
       currentRoundRef.current = [];
     }
 
-    setMessages(prevMessages => [
-      ...prevMessages,
-      {
+    setMessages(prevMessages => {
+      
+      const result = prevMessages.filter(m => m.type !== 'loading');
+      const newMessage = {
         id: prevMessages.length ? prevMessages[prevMessages.length - 1].id + 1 : 0,
         isNewRound: message.sender === 'user' || currentRoundRef.current.length === 1,
         ...message,
-      },
-    ]);
+      };
+      result.push(newMessage);
+
+      // 如果当前消息是用户消息，则推送一个 loading 消息
+      if (newMessage.sender === 'user') {
+        result.push({ sender: 'assistant', type: 'loading', isNewRound: true, id: 'loading' });
+      }
+
+      return result;
+    });
   }
 
   const handleMessage = ({ type, message }) => {
