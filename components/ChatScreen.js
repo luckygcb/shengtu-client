@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, FlatList, Pressable } from 'react-native';
+import { View, StyleSheet, FlatList, Keyboard } from 'react-native';
 import { Button, Icon, TextInput, IconButton, Text } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import ChatMessage from './ChatMessage';
@@ -8,7 +8,7 @@ import { UpwardMessageType, AudioMessage, StudentMessage } from '../proto/upward
 import { blobUrlToUint8Array } from '../utils/binary';
 import { detectMobileOperatingSystem } from '../utils/os';
 
-console.log(detectMobileOperatingSystem());
+
 export default function ChatScreen() {
 
   const [inputMode, setInputMode] = useState('text');
