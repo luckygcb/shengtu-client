@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, FlatList, useWindowDimensions } from 'react-native';
+import { View, StyleSheet, FlatList, useWindowDimensions, Platform } from 'react-native';
 import { Button, Icon, TextInput, IconButton, Text } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import { useHeaderHeight } from '@react-navigation/elements';
@@ -189,6 +189,16 @@ export default function ChatScreen() {
       }, 100);
     }
   }, [messages.length]);
+
+  // iOS 中页面高度变化，需要滚动到页面顶部
+  useEffect(() => {
+    if (Platform.OS === 'web') {
+      setTimeout(() => {
+        document.scrollingElement.scrollIntoView();
+        flatListRef.current.scrollToEnd();
+      }, 200);
+    }
+  }, [screenHeight]);
 
   return (
     <View
