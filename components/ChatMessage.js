@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Icon, Avatar, Button } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import Matts from './Matts';
@@ -93,12 +93,12 @@ const ChatMessageContent = ({ message }) => {
           </View>
         ))}
         {message.audio && (
-          <Button
+          <Pressable
             style={styles.playButton}
             onPress={() => playAudio(message.audio)}
           >
             <Volume isPlaying={isPlaying} color="#987fe0" />
-          </Button>
+          </Pressable>
         )}
       </View>
     );
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    alignItems: 'center',
+    alignItems: 'flex-end',
     gap: 10,
     flexWrap: 'wrap',
   },
@@ -163,6 +163,11 @@ const styles = StyleSheet.create({
   },
   loadingMessage: {
     paddingTop: 15,
+  },
+  playButton: {
+    width: 34,
+    height: 34,
+    justifyContent: 'center',
   }
 });
 
