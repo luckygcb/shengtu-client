@@ -218,8 +218,8 @@ export default function ChatScreen() {
       <View style={styles.buttonContainer}>
         {inputMode === 'audio' ? (
           <Button
-            mode="contained"
-            buttonColor="rgba(99,106,232,1)"
+            mode="elevated"
+            buttonColor="#fff"
             style={styles.talkButton}
             labelStyle={styles.buttonText}
             onPressIn={startRecording}
@@ -279,9 +279,9 @@ const styles = StyleSheet.create({
   buttonText: {
     userSelect: 'none',
     paddingHorizontal: 50,
-    color: 'white',
+    color: '#000',
     fontSize: 16,
-    fontWeight: 400,
+    fontWeight: 600,
   },
   switchButton: {
     position: 'absolute',
