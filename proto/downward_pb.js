@@ -37,6 +37,7 @@ export const TutorMessage = /*@__PURE__*/ proto3.makeMessageType(
   () => [
     { no: 1, name: "text", kind: "scalar", T: 9 /* ScalarType.STRING */ },
     { no: 2, name: "expected_messages", kind: "message", T: WordCorrectMessage, repeated: true },
+    { no: 3, name: "audio", kind: "scalar", T: 12 /* ScalarType.BYTES */ },
   ],
 );
 

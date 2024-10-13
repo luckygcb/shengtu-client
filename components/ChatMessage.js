@@ -1,9 +1,11 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Icon, Avatar } from 'react-native-paper';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { Icon, Avatar, Button } from 'react-native-paper';
+import { Audio } from 'expo-av';
 import Matts from './Matts';
 import Letter from './Letter';
 import AudioMessage from './AudioMessage';
+import Volume from './Volume';
 import Loading from './Loading';
 
 const ChatMessage = ({ message }) => {
@@ -36,6 +38,23 @@ const ChatMessage = ({ message }) => {
 }
 
 const ChatMessageContent = ({ message }) => {
+
+  const [isPlaying, setIsPlaying] = useState(false);
+  const playAudio = async (binary) => {
+    // TODO 支持 iOS 和 Android 原生播放
+    const blob = new Blob([binary]);
+    const uri = URL.createObjectURL(blob);
+    const { sound } = await Audio.Sound.createAsync({ uri });
+    
+    await sound.playAsync();
+    setIsPlaying(true);
+
+    sound.setOnPlaybackStatusUpdate((status) => {
+      if (status.didJustFinish) {
+        setIsPlaying(false);
+      }
+    });
+  }
 
   if (message.type === 'audio') {
     return (
@@ -72,6 +91,14 @@ const ChatMessageContent = ({ message }) => {
             </Matts>
           </View>
         ))}
+        {message.audio && (
+          <Button
+            style={styles.playButton}
+            onPress={() => playAudio(message.audio)}
+          >
+            <Volume isPlaying={isPlaying} color="#987fe0" />
+          </Button>
+        )}
       </View>
     );
   } else if (message.type === 'loading') {
@@ -118,6 +145,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-start',
+    alignItems: 'center',
     gap: 10,
     flexWrap: 'wrap',
   },

@@ -72,7 +72,7 @@ export default function ChatScreen() {
    
     if (expectedArticulation.length) {
       expectedSentenceRef.current = expectedArticulation.map(m => m.word).join('');
-      pushMessage({ sender: 'assistant', type: 'spell_messages', messages: expectedArticulation });
+      pushMessage({ sender: 'assistant', type: 'spell_messages', messages: expectedArticulation, audio: message.audio });
     }
 
     if (actualArticulation.length) {

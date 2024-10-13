@@ -74,6 +74,11 @@ export declare class TutorMessage extends Message<TutorMessage> {
    */
   expectedMessages: WordCorrectMessage[];
 
+  /**
+   * @generated from field: bytes audio = 3;
+   */
+  audio: Uint8Array;
+
   constructor(data?: PartialMessage<TutorMessage>);
 
   static readonly runtime: typeof proto3;
