@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Icon, Avatar, Button } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import Matts from './Matts';
@@ -7,6 +7,7 @@ import Letter from './Letter';
 import AudioMessage from './AudioMessage';
 import Volume from './Volume';
 import Loading from './Loading';
+import { detectMobileOperatingSystem } from '../utils/os';
 
 const ChatMessage = ({ message }) => {
   return (
@@ -42,7 +43,7 @@ const ChatMessageContent = ({ message }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const playAudio = async (binary) => {
     // TODO 支持 iOS 和 Android 原生播放
-    const blob = new Blob([binary]);
+    const blob = new Blob([binary], { type: detectMobileOperatingSystem() === 'iOS' ? 'audio/wav' : 'audio/webm' });
     const uri = URL.createObjectURL(blob);
     const { sound } = await Audio.Sound.createAsync({ uri });
     
