@@ -4,23 +4,35 @@ import { Platform } from 'react-native';
 import { UpwardMessage } from '../proto/upward_pb';
 import { DownwardMessage, DownwardMessageType, TutorMessage, WordCorrectMessage, SentenceCorrectMessage } from '../proto/downward_pb';
 import { detectMobileOperatingSystem } from '../utils/os';
+import { getDeviceId } from '../utils/device';
 
 const platform = Platform.OS === 'web' ? (detectMobileOperatingSystem() === 'iOS' ? 'ios' : 'android') : Platform.OS;
 console.log('platform', platform);
 export function useWebSocket (onMessage) {
   const [socket, setSocket] = useState(null);
 
-  useEffect(() => {
+  const connect = async () => {
+    const deviceId = await getDeviceId();
     const sessionId = uuid.v4();
     const schema = Platform.OS === 'web' ? '' : 'ws:';
-    const ws = new WebSocket(`${schema}//echo_journey.yuanfudao.biz/echo-journey/ws/talk/${sessionId}?platform=${platform}`);
+    const ws = new WebSocket(`${schema}//echo_journey.yuanfudao.biz/echo-journey/ws/talk/${sessionId}?platform=${platform}&deviceId=${deviceId}`);
     setSocket(ws);
-
     ws.addEventListener('message', handleProtoMessage);
+  }
+
+  const disconnect = () => {
+    if (!socket) {
+      return;
+    }
+    socket.removeEventListener('message', handleProtoMessage);
+    socket.close();
+  }
+
+  useEffect(() => {
+    connect();
 
     return () => {
-      ws.removeEventListener('message', handleProtoMessage);
-      ws.close();
+      disconnect();
     }
   }, []);
 
