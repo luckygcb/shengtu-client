@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, FlatList, Keyboard } from 'react-native';
+import { View, StyleSheet, FlatList, useWindowDimensions } from 'react-native';
 import { Button, Icon, TextInput, IconButton, Text } from 'react-native-paper';
 import { Audio } from 'expo-av';
+import { useHeaderHeight } from '@react-navigation/elements';
 import ChatMessage from './ChatMessage';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { UpwardMessageType, AudioMessage, StudentMessage } from '../proto/upward_pb';
@@ -20,6 +21,9 @@ export default function ChatScreen() {
   const currentRoundRef = useRef([]);
   const flatListRef = useRef();
   const [permissionResponse, requestPermission] = Audio.usePermissions();
+
+  const { height: screenHeight } = useWindowDimensions();
+  const headerHeight = useHeaderHeight();
 
   const toggleInputMode = () => {
     setInputMode(inputMode === 'text' ? 'audio' : 'text');
@@ -187,7 +191,11 @@ export default function ChatScreen() {
   }, [messages.length]);
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, {
+        height: screenHeight - headerHeight
+      }]}
+    >
       <View style={styles.messageContainer}>
         <FlatList
           data={messages}
@@ -233,7 +241,6 @@ export default function ChatScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'space-between',
     backgroundColor: '#fff',
     padding: 10,
