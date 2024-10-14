@@ -4,8 +4,8 @@
   "main": "expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web",
     "gen:proto": "buf generate proto",
     "build:web": "expo export --platform web"
@@ -14,11 +14,14 @@
     "@ant-design/icons-react-native": "^2.3.2",
     "@ant-design/react-native": "^5.2.3",
     "@expo/metro-runtime": "~3.2.3",
+    "@react-native-async-storage/async-storage": "1.23.1",
     "@react-navigation/native": "^6.1.18",
     "@react-navigation/native-stack": "^6.11.0",
     "@types/react": "~18.2.79",
+    "buffer": "^6.0.3",
     "expo": "~51.0.36",
-    "expo-av": "~14.0.7",
+    "expo-av": "^14.0.7",
+    "expo-file-system": "~17.0.1",
     "expo-font": "~12.0.10",
     "expo-status-bar": "~1.12.1",
     "react": "18.2.0",
@@ -31,8 +34,9 @@
     "react-native-screens": "3.31.1",
     "react-native-uuid": "^2.0.2",
     "react-native-web": "~0.19.12",
+    "text-encoding": "^0.7.0",
     "typescript": "~5.3.3",
-    "@react-native-async-storage/async-storage": "1.23.1"
+    "expo-dev-client": "~4.0.28"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
