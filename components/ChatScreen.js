@@ -197,13 +197,22 @@ export default function ChatScreen() {
         document.scrollingElement.scrollIntoView();
         flatListRef.current.scrollToEnd();
       }, 200);
+    } else {
+      flatListRef.current.scrollToEnd();
     }
   }, [screenHeight]);
 
   return (
     <View
       style={[styles.container, {
-        height: screenHeight - headerHeight
+        flex: Platform.select({
+          web: undefined,
+          default: 1,
+        }),
+        height: Platform.select({
+          web: screenHeight - headerHeight,
+          default: 'auto',
+        }) 
       }]}
     >
       <View style={styles.messageContainer}>
