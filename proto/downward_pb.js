@@ -56,6 +56,17 @@ export const WordCorrectMessage = /*@__PURE__*/ proto3.makeMessageType(
 );
 
 /**
+ * @generated from message echo_journey.downward.CorrectMp4InfoMessage
+ */
+export const CorrectMp4InfoMessage = /*@__PURE__*/ proto3.makeMessageType(
+  "echo_journey.downward.CorrectMp4InfoMessage",
+  () => [
+    { no: 1, name: "mp4_url", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 2, name: "text", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ],
+);
+
+/**
  * @generated from message echo_journey.downward.SentenceCorrectMessage
  */
 export const SentenceCorrectMessage = /*@__PURE__*/ proto3.makeMessageType(
@@ -64,6 +75,9 @@ export const SentenceCorrectMessage = /*@__PURE__*/ proto3.makeMessageType(
     { no: 1, name: "expected_messages", kind: "message", T: WordCorrectMessage, repeated: true },
     { no: 2, name: "messages", kind: "message", T: WordCorrectMessage, repeated: true },
     { no: 3, name: "suggestions", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "accuracy_score", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
+    { no: 5, name: "fluency_score", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
+    { no: 6, name: "correct_mp4_info", kind: "message", T: CorrectMp4InfoMessage, repeated: true },
   ],
 );
 

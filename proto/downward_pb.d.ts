@@ -139,6 +139,35 @@ export declare class WordCorrectMessage extends Message<WordCorrectMessage> {
 }
 
 /**
+ * @generated from message echo_journey.downward.CorrectMp4InfoMessage
+ */
+export declare class CorrectMp4InfoMessage extends Message<CorrectMp4InfoMessage> {
+  /**
+   * @generated from field: string mp4_url = 1;
+   */
+  mp4Url: string;
+
+  /**
+   * @generated from field: string text = 2;
+   */
+  text: string;
+
+  constructor(data?: PartialMessage<CorrectMp4InfoMessage>);
+
+  static readonly runtime: typeof proto3;
+  static readonly typeName = "echo_journey.downward.CorrectMp4InfoMessage";
+  static readonly fields: FieldList;
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): CorrectMp4InfoMessage;
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): CorrectMp4InfoMessage;
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): CorrectMp4InfoMessage;
+
+  static equals(a: CorrectMp4InfoMessage | PlainMessage<CorrectMp4InfoMessage> | undefined, b: CorrectMp4InfoMessage | PlainMessage<CorrectMp4InfoMessage> | undefined): boolean;
+}
+
+/**
  * @generated from message echo_journey.downward.SentenceCorrectMessage
  */
 export declare class SentenceCorrectMessage extends Message<SentenceCorrectMessage> {
@@ -156,6 +185,21 @@ export declare class SentenceCorrectMessage extends Message<SentenceCorrectMessa
    * @generated from field: string suggestions = 3;
    */
   suggestions: string;
+
+  /**
+   * @generated from field: float accuracy_score = 4;
+   */
+  accuracyScore: number;
+
+  /**
+   * @generated from field: float fluency_score = 5;
+   */
+  fluencyScore: number;
+
+  /**
+   * @generated from field: repeated echo_journey.downward.CorrectMp4InfoMessage correct_mp4_info = 6;
+   */
+  correctMp4Info: CorrectMp4InfoMessage[];
 
   constructor(data?: PartialMessage<SentenceCorrectMessage>);
 
