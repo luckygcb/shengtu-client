@@ -6,7 +6,7 @@ import { DownwardMessage, DownwardMessageType, TutorMessage, WordCorrectMessage,
 import { detectMobileOperatingSystem } from '../utils/os';
 import { getDeviceId } from '../utils/device';
 
-const platform = Platform.OS === 'web' ? (detectMobileOperatingSystem() === 'iOS' ? 'ios' : 'android') : Platform.OS;
+const platform = Platform.OS === 'web' ? (detectMobileOperatingSystem() === 'iOS' ? 'web-ios' : 'web-android') : Platform.OS;
 console.log('platform', platform);
 export function useWebSocket (onMessage) {
   const [socket, setSocket] = useState(null);
