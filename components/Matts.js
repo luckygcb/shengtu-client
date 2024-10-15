@@ -6,7 +6,7 @@ const Matts = ({ children }) => {
     <View style={styles.container}>
       <View style={styles.gridHorizontal} />
       <View style={styles.gridVertical} />
-      <View style={styles.content}>
+      <View>
         {children}
       </View>
     </View>
@@ -43,9 +43,6 @@ const styles = StyleSheet.create({
     borderRightWidth: 1,
     borderColor: '#bcc1ca',
     borderStyle: 'dashed',
-  },
-  content: {
-    padding: 10,
   },
 });
 
