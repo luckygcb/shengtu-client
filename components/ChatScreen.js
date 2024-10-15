@@ -75,6 +75,10 @@ export default function ChatScreen() {
         }
       });
     }
+
+    if (typeof message.accuracyScore === 'number' && typeof message.fluencyScore === 'number') {
+      pushMessage({ sender: 'assistant', type: 'text', text: `综合: ${message.accuracyScore} 分  流畅度: ${message.fluencyScore} 分`, bold: true });
+    }
    
     if (expectedArticulation.length) {
       expectedSentenceRef.current = expectedArticulation.map(m => m.word).join('');
