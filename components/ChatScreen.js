@@ -3,6 +3,8 @@ import { View, StyleSheet, FlatList, useWindowDimensions, Platform } from 'react
 import { Button, Icon, TextInput, IconButton, Text } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import { useHeaderHeight } from '@react-navigation/elements';
+import * as FileSystem from 'expo-file-system';
+import { Buffer } from 'buffer';
 import ChatMessage from './ChatMessage';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { UpwardMessageType, AudioMessage, StudentMessage } from '../proto/upward_pb';
@@ -157,8 +159,26 @@ export default function ChatScreen() {
         audioData: uint8Array,
         expectedSentence: expectedSentenceRef.current,
       });
-      console.log('Sending audio message:', audioMessage);
+      console.log('Sending audio message, length:', audioMessage.audioData.length);
       sendUpwardMessage(UpwardMessageType.AUDIO_MESSAGE, audioMessage);
+    } else {
+      try {
+        const fileInfo = await FileSystem.getInfoAsync(uri);
+        if (fileInfo.exists) {
+          const fileContent = await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+          const uint8Array = new Uint8Array(Buffer.from(fileContent, 'base64'));
+          const audioMessage = new AudioMessage({
+            audioData: uint8Array,
+            expectedSentence: expectedSentenceRef.current,
+          });
+          console.log('Sending audio message, length:', audioMessage.audioData.length);
+          sendUpwardMessage(UpwardMessageType.AUDIO_MESSAGE, audioMessage);
+        } else {
+          console.error('Audio file does not exist:', uri);
+        }
+      } catch (error) {
+        console.error('Error reading audio file:', error);
+      }
     }
   }
 

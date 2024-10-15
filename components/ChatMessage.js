@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, StyleSheet, Pressable, Platform } from 'react-native';
 import { Icon, Avatar, Button } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import * as FileSystem from 'expo-file-system';
@@ -43,6 +43,8 @@ const ChatMessage = ({ message }) => {
 const ChatMessageContent = ({ message }) => {
 
   const [isPlaying, setIsPlaying] = useState(false);
+  const audioUriRef = useRef(null);
+  const soundRef = useRef(null);
 
   const onPlaybackStatusUpdate = (status) => {
     if (status.didJustFinish) {
@@ -51,7 +53,7 @@ const ChatMessageContent = ({ message }) => {
         soundRef.current.unloadAsync();
         soundRef.current = null;
         // 可选：删除文件以释放空间
-        FileSystem.deleteAsync(soundRef.current?.uri, { idempotent: true }).catch((err) => {
+        FileSystem.deleteAsync(audioUriRef.current, { idempotent: true }).catch((err) => {
           console.warn('删除音频文件失败:', err);
         });
       }
@@ -78,6 +80,7 @@ const ChatMessageContent = ({ message }) => {
           onPlaybackStatusUpdate
         );
 
+        audioUriRef.current = fileUri;
         soundRef.current = sound;
         setIsPlaying(true);
       } catch (error) {
