@@ -1,4 +1,5 @@
 import './polyfill';
+import * as Sentry from '@sentry/react-native';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
@@ -7,6 +8,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabBarComponent from './components/TabBar';
 import ChatScreen from './components/ChatScreen';
+
+Sentry.init({
+  dsn: 'https://010b7f4a3a360ccedd493320b4c5d498@o4508126757978112.ingest.us.sentry.io/4508126761582592',
+  debug: true, // If `true`, Sentry will try to print out useful debugging information if something goes wrong with sending the event. Set it to `false` in production
+});
 
 const Stack = createNativeStackNavigator();
 
@@ -19,7 +25,7 @@ function HomeScreen({ navigation }) {
   );
 }
 
-export default function App() {
+export default Sentry.wrap(function App() {
   return (
     <PaperProvider
       theme={{
@@ -42,7 +48,7 @@ export default function App() {
       </NavigationContainer>
     </PaperProvider>
   );
-}
+});
 
 
 
