@@ -14,7 +14,7 @@ export function useWebSocket (onMessage) {
   const connect = async () => {
     const deviceId = await getDeviceId();
     const sessionId = uuid.v4();
-    const schema = Platform.OS === 'web' ? '' : 'ws:';
+    const schema = Platform.OS === 'web' ? (location.protocol.startsWith('https') ? 'wss' : 'ws') : 'ws:';
     const ws = new WebSocket(`${schema}//echo_journey.yuanfudao.biz/echo-journey/ws/talk/${sessionId}?platform=${platform}&deviceId=${deviceId}`);
     setSocket(ws);
     ws.addEventListener('message', handleProtoMessage);
