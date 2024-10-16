@@ -3,7 +3,7 @@ import { Audio } from 'expo-av';
 import { Platform } from 'react-native';
 import * as FileSystem from 'expo-file-system';
 import { Buffer } from 'buffer';
-import { detectMobileOperatingSystem } from '../utils/device';
+import { detectMobileOperatingSystem } from '../utils/os';
 
 export function usePlayAudio () {
   const [isPlaying, setIsPlaying] = useState(false);
