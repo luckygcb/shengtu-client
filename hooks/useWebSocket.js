@@ -65,40 +65,43 @@ export function useWebSocket (onMessage) {
   }
 
   const handleProtoMessage = async(event) => {
-    let downwardMessage;
-
-    if (event.data instanceof ArrayBuffer) {
-      downwardMessage = DownwardMessage.fromBinary(new Uint8Array(event.data));
-    } else if (event.data instanceof Blob) {
-      downwardMessage = DownwardMessage.fromBinary(new Uint8Array(await event.data.arrayBuffer()));
-    } else {
-      console.log('event.data', event.data);
-      throw new Error('Unknown data type: ' + typeof event.data);
+    try {
+      let downwardMessage;
+      if (event.data instanceof ArrayBuffer) {
+        downwardMessage = DownwardMessage.fromBinary(new Uint8Array(event.data));
+      } else if (event.data instanceof Blob) {
+        downwardMessage = DownwardMessage.fromBinary(new Uint8Array(await event.data.arrayBuffer()));
+      } else {
+        console.log('event.data', event.data);
+        throw new Error('Unknown data type: ' + typeof event.data);
+      }
+      console.log('downwardMessage', downwardMessage);
+      let type;
+      let message;
+      switch (downwardMessage.type) {
+        case DownwardMessageType.TUTOR_MESSAGE:
+          type = 'tutor_message';
+          message = TutorMessage.fromBinary(downwardMessage.payload);
+          break;
+        case DownwardMessageType.WORD_CORRECT_MESSAGE:
+          type = 'word_correct_message';
+          message = WordCorrectMessage.fromBinary(downwardMessage.payload);
+          break;
+        case DownwardMessageType.SENTENCE_CORRECT_MESSAGE:
+          type = 'sentence_correct_message';
+          message = SentenceCorrectMessage.fromBinary(downwardMessage.payload);
+          break;
+        default:
+          throw new Error('Unknown message type: ' + downwardMessage.type);
+      }
+  
+      onMessage?.({
+        type,
+        message,
+      });
+    } catch (error) {
+      Sentry.captureException(error);
     }
-    console.log('downwardMessage', downwardMessage);
-    let type;
-    let message;
-    switch (downwardMessage.type) {
-      case DownwardMessageType.TUTOR_MESSAGE:
-        type = 'tutor_message';
-        message = TutorMessage.fromBinary(downwardMessage.payload);
-        break;
-      case DownwardMessageType.WORD_CORRECT_MESSAGE:
-        type = 'word_correct_message';
-        message = WordCorrectMessage.fromBinary(downwardMessage.payload);
-        break;
-      case DownwardMessageType.SENTENCE_CORRECT_MESSAGE:
-        type = 'sentence_correct_message';
-        message = SentenceCorrectMessage.fromBinary(downwardMessage.payload);
-        break;
-      default:
-        throw new Error('Unknown message type: ' + downwardMessage.type);
-    }
-
-    onMessage?.({
-      type,
-      message,
-    });
   }
 
   return { socket, sendUpwardMessage, closeSocket };
