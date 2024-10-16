@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   correntVideosMessage: {
+    width: '100%',
     flexDirection: 'row',
     justifyContent: 'flex-start',
     gap: 10,
