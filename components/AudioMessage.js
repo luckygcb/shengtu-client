@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   audioMessage: {
     width: '30%',
     height: 44,
-    borderRadius: 10,
+    borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,

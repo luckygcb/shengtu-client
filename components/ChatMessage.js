@@ -93,6 +93,7 @@ const ChatMessageContent = ({ message, onPressCorrectVideo }) => {
           <Button
             key={correctVideo.id}
             mode="outlined"
+            style={styles.correctVideoButton}
             onPress={() => {
               onPressCorrectVideo(correctVideo.mp4Url);
             }}
@@ -174,6 +175,9 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     gap: 10,
     flexWrap: 'wrap',
+  },
+  correctVideoButton: {
+    borderRadius: 8,
   }
 });
 
