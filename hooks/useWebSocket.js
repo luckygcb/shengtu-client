@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import uuid from 'react-native-uuid';
 import { Platform } from 'react-native';
+import * as Sentry from '@sentry/react-native';
 import { UpwardMessage } from '../proto/upward_pb';
 import { DownwardMessage, DownwardMessageType, TutorMessage, WordCorrectMessage, SentenceCorrectMessage } from '../proto/downward_pb';
 import { detectMobileOperatingSystem } from '../utils/os';
@@ -14,10 +15,17 @@ export function useWebSocket (onMessage) {
   const connect = async () => {
     const deviceId = await getDeviceId();
     const sessionId = uuid.v4();
-    const schema = Platform.OS === 'web' ? (location.protocol.startsWith('https') ? 'wss' : 'ws') : 'ws:';
+    const schema = Platform.OS === 'web' ? (location.protocol.startsWith('https') ? 'wss:' : 'ws:') : __DEV__ ? 'ws:' : 'wss:';
     const ws = new WebSocket(`${schema}//echo_journey.yuanfudao.biz/echo-journey/ws/talk/${sessionId}?platform=${platform}&deviceId=${deviceId}`);
     setSocket(ws);
     ws.addEventListener('message', handleProtoMessage);
+    ws.addEventListener('error', (event) => {
+      Sentry.captureMessage(JSON.stringify({
+        message: 'WebSocket error',
+        type: event.type,
+        target: event.target,
+      }));
+    });
   }
 
   const disconnect = () => {
