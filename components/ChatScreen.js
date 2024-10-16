@@ -10,8 +10,7 @@ import { useWebSocket } from '../hooks/useWebSocket';
 import { UpwardMessageType, AudioMessage, StudentMessage } from '../proto/upward_pb';
 import { blobUrlToUint8Array } from '../utils/binary';
 import { detectMobileOperatingSystem } from '../utils/os';
-
-
+import VideoModal from './VideoModal';
 export default function ChatScreen() {
 
   const [inputMode, setInputMode] = useState('text');
@@ -19,6 +18,8 @@ export default function ChatScreen() {
   const [recording, setRecording] = useState();
   const [messages, setMessages] = useState([]);
   const [recordState, setRecordState] = useState('');
+  const [correctVideoUri, setCorrectVideoUri] = useState('');
+  const [videoModalVisible, setVideoModalVisible] = useState(false);
   const expectedSentenceRef = useRef('');
   const currentRoundRef = useRef([]);
   const flatListRef = useRef();
@@ -76,7 +77,8 @@ export default function ChatScreen() {
       });
     }
 
-    if (typeof message.accuracyScore === 'number' && typeof message.fluencyScore === 'number') {
+    // 评分为0, 不显示
+    if (message.accuracyScore && message.fluencyScore) {
       pushMessage({ sender: 'assistant', type: 'text', text: `综合: ${message.accuracyScore} 分  流畅度: ${message.fluencyScore} 分`, bold: true });
     }
    
@@ -88,6 +90,11 @@ export default function ChatScreen() {
     if (actualArticulation.length) {
       pushMessage({ sender: 'assistant', type: 'text', text: '你的声音听起来像: ', bold: true });
       pushMessage({ sender: 'assistant', type: 'spell_messages', messages: actualArticulation });
+    }
+
+    if (message.correctMp4Info?.length) {
+      pushMessage({ sender: 'assistant', type: 'text', text: '建议口型视频: ', bold: true });
+      pushMessage({ sender: 'assistant', type: 'correct_videos', correctVideos: message.correctMp4Info });
     }
 
     if (message.suggestions) {
@@ -185,9 +192,14 @@ export default function ChatScreen() {
       }
     }
   }
+  
+  const handlePressCorrectVideo = (uri) => {
+    setCorrectVideoUri(uri);
+    setVideoModalVisible(true);
+  }
 
   const renderMessage = ({ item }) => {
-    return <ChatMessage message={item} />;
+    return <ChatMessage message={item} onPressCorrectVideo={handlePressCorrectVideo} />;
   };
 
   const getStatusText = () => {
@@ -278,6 +290,11 @@ export default function ChatScreen() {
           onPress={toggleInputMode}
         />
       </View>
+      <VideoModal
+        visible={videoModalVisible}
+        hideModal={() => setVideoModalVisible(false)}
+        uri={correctVideoUri}
+      />
     </View>
   );
 }
