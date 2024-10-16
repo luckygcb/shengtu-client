@@ -23,7 +23,9 @@
         "backgroundColor": "#ffffff"
       },
       "permissions": [
-        "RECORD_AUDIO"
+        "RECORD_AUDIO",
+        "ACCESS_NETWORK_STATE",
+        "INTERNET"
       ],
       "package": "com.echo_journey.client"
     },
