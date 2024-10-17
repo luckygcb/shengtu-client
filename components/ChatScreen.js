@@ -37,7 +37,7 @@ export default function ChatScreen() {
   };
 
   const pushMessage = (message) => {
-    if (message.sender === 'assistant') {
+    if (message.sender === 'assistant' && message.type !== 'loading') {
       currentRoundRef.current.push(message);
     } else {
       currentRoundRef.current = [];
@@ -48,7 +48,7 @@ export default function ChatScreen() {
       const result = prevMessages.filter(m => m.type !== 'loading');
       const newMessage = {
         id: prevMessages.length ? prevMessages[prevMessages.length - 1].id + 1 : 0,
-        isNewRound: message.sender === 'user' || currentRoundRef.current.length === 1,
+        isNewRound: message.sender === 'user' || currentRoundRef.current.length === 1 || message.type === 'loading',
         ...message,
       };
       result.push(newMessage);
@@ -107,7 +107,11 @@ export default function ChatScreen() {
     }
   }
 
-  const { sendUpwardMessage } =  useWebSocket(chatScene, handleMessage);
+  const handleOpen = () => {
+    pushMessage({ sender: 'assistant', type: 'loading' });
+  }
+
+  const { sendUpwardMessage } =  useWebSocket(chatScene, { onMessage: handleMessage, onOpen: handleOpen });
 
   useEffect(() => {
     return () => {
