@@ -1,8 +1,27 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import { List, Avatar } from 'react-native-paper';
+import { useAssistantAvatar } from '../hooks/useAssistantAvatar';
 
 const ChatsComponent = ({ navigation }) => {
+
+  const { getAvatar } = useAssistantAvatar();
+
+  const chats = [
+    {
+      name: '瓜瓜',
+      description: '今天有什么想聊的话题？',
+      avatar: getAvatar('talk'),
+      scene: 'talk',
+    },
+    {
+      name: '斗斗',
+      description: '奖励你一大挑战？',
+      avatar: getAvatar('exercises'),
+      scene: 'exercises',
+    },
+  ];
+
   return (
     <View
       style={styles.container}
@@ -18,35 +37,19 @@ const ChatsComponent = ({ navigation }) => {
         }}
       >
         <List.Section>
-          {/* <List.Item
-            title="听力大挑战"
-            description="今天我们来聊点什么呢？"
-            left={props => <List.Icon {...props} icon="chat" />}
-            right={props => <List.Icon {...props} icon="chevron-right" />}
-            onPress={() => navigation.navigate('Chat', { name: '听力大挑战' })}
-          /> */}
-          <List.Item
-            title="瓜瓜"
-            description="今天有什么想聊的话题？"
-            style={{
-              paddingLeft: 24,
-            }}
-            left={props => <Avatar.Image size={44} source={require('../assets/images/guagua.jpg')} />}
-            right={props => <List.Icon {...props} icon="chevron-right" />}
-            onPress={() => navigation.navigate('Chat', { name: '瓜瓜', scene: 'talk' })}
-          />
-          <List.Item
-            title="斗斗"
-            description={
-              <Text>奖励你一大挑战？</Text>
-            }
-            style={{
-              paddingLeft: 24,
-            }}
-            left={props => <Avatar.Image size={44} source={require('../assets/images/doudou.jpg')} />}
-            right={props => <List.Icon {...props} icon="chevron-right" />}
-            onPress={() => navigation.navigate('Chat', { name: '斗斗', scene: 'exercises' })}
-          />
+          {chats.map((chat, index) => (
+            <List.Item
+              key={index}
+              title={chat.name}
+              description={chat.description}
+              style={{
+                paddingLeft: 24,
+              }}
+              left={props => <Avatar.Image size={44} source={chat.avatar} />}
+              right={props => <List.Icon {...props} icon="chevron-right" />}
+              onPress={() => navigation.navigate('Chat', { name: chat.name, scene: chat.scene })}
+            />
+          ))}
         </List.Section>
       </ScrollView>
     </View>

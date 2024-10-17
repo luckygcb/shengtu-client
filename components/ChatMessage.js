@@ -7,8 +7,11 @@ import AudioMessage from './AudioMessage';
 import Volume from './Volume';
 import Loading from './Loading';
 import { usePlayAudio } from '../hooks/usePlayAudio';
+import { useAssistantAvatar } from '../hooks/useAssistantAvatar';
 
 const ChatMessage = ({ message, onPressCorrectVideo }) => {
+  const { avatar } = useAssistantAvatar();
+
   return (
     <View
       style={[
@@ -22,7 +25,7 @@ const ChatMessage = ({ message, onPressCorrectVideo }) => {
       <View style={styles.avatarContainer}>
         {message.isNewRound ? (
           message.sender === 'assistant' ? (
-            <Avatar.Image size={28} source={require('../assets/images/assistant.jpg')} />
+            <Avatar.Image size={28} source={avatar} />
           ) : (
             <Icon source="account" size={28} />
           )
