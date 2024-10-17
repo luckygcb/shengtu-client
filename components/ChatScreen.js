@@ -3,6 +3,7 @@ import { View, StyleSheet, FlatList, useWindowDimensions, Platform } from 'react
 import { Button, Icon, TextInput, IconButton, Text } from 'react-native-paper';
 import { Audio } from 'expo-av';
 import { useHeaderHeight } from '@react-navigation/elements';
+import { useRoute } from '@react-navigation/native';
 import * as FileSystem from 'expo-file-system';
 import { Buffer } from 'buffer';
 import ChatMessage from './ChatMessage';
@@ -11,6 +12,7 @@ import { UpwardMessageType, AudioMessage, StudentMessage } from '../proto/upward
 import { blobUrlToUint8Array } from '../utils/binary';
 import { detectMobileOperatingSystem } from '../utils/os';
 import VideoModal from './VideoModal';
+
 export default function ChatScreen() {
 
   const [inputMode, setInputMode] = useState('text');
@@ -24,6 +26,8 @@ export default function ChatScreen() {
   const currentRoundRef = useRef([]);
   const flatListRef = useRef();
   const [permissionResponse, requestPermission] = Audio.usePermissions();
+  const route = useRoute();
+  const chatScene = route.params?.scene;
 
   const { height: screenHeight } = useWindowDimensions();
   const headerHeight = useHeaderHeight();
@@ -103,7 +107,7 @@ export default function ChatScreen() {
     }
   }
 
-  const { sendUpwardMessage } =  useWebSocket(handleMessage);
+  const { sendUpwardMessage } =  useWebSocket(chatScene, handleMessage);
 
   useEffect(() => {
     return () => {

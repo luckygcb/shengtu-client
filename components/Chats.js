@@ -26,14 +26,26 @@ const ChatsComponent = ({ navigation }) => {
             onPress={() => navigation.navigate('Chat', { name: '听力大挑战' })}
           /> */}
           <List.Item
-            title="发音大挑战"
-            description="准备好了吗？"
+            title="瓜瓜"
+            description="今天有什么想聊的话题？"
             style={{
               paddingLeft: 24,
             }}
             left={props => <Avatar.Image size={44} source={require('../assets/images/assistant.jpg')} />}
             right={props => <List.Icon {...props} icon="chevron-right" />}
-            onPress={() => navigation.navigate('Chat', { name: '发音大挑战' })}
+            onPress={() => navigation.navigate('Chat', { name: '瓜瓜', scene: 'talk' })}
+          />
+          <List.Item
+            title="斗斗"
+            description={
+              <Text>奖励你一大挑战？</Text>
+            }
+            style={{
+              paddingLeft: 24,
+            }}
+            left={props => <Avatar.Image size={44} source={require('../assets/images/doudou.jpg')} />}
+            right={props => <List.Icon {...props} icon="chevron-right" />}
+            onPress={() => navigation.navigate('Chat', { name: '斗斗', scene: 'exercises' })}
           />
         </List.Section>
       </ScrollView>

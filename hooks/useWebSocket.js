@@ -9,15 +9,18 @@ import { getDeviceId } from '../utils/device';
 
 const platform = Platform.OS === 'web' ? (detectMobileOperatingSystem() === 'iOS' ? 'web-ios' : 'web-android') : Platform.OS;
 console.log('platform', platform);
-export function useWebSocket (onMessage) {
+export function useWebSocket (bot = 'talk', onMessage) {
   const [socket, setSocket] = useState(null);
 
   const connect = async () => {
     const deviceId = await getDeviceId();
     const sessionId = uuid.v4();
     const schema = Platform.OS === 'web' ? (location.protocol.startsWith('https') ? 'wss:' : 'ws:') : 'ws:';
-    const ws = new WebSocket(`${schema}//echo_journey.yuanfudao.biz/echo-journey/ws/talk/${sessionId}?platform=${platform}&deviceId=${deviceId}`);
+    const ws = new WebSocket(`${schema}//echo_journey.yuanfudao.biz/echo-journey/ws/${bot}/${sessionId}?platform=${platform}&deviceId=${deviceId}`);
     setSocket(ws);
+    ws.onopen = () => {
+      console.log('WebSocket connected');
+    };
     ws.addEventListener('message', handleProtoMessage);
     ws.addEventListener('error', (event) => {
       console.log('WebSocket error', event);
