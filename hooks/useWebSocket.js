@@ -16,7 +16,7 @@ export function useWebSocket (scene = 'talk', { onMessage, onOpen }) {
     const deviceId = await getDeviceId();
     const sessionId = uuid.v4();
     const schema = Platform.OS === 'web' ? (location.protocol.startsWith('https') ? 'wss:' : 'ws:') : 'ws:';
-    const ws = new WebSocket(`${schema}//echo_journey.yuanfudao.biz/echo-journey/ws/${scene}/${sessionId}?platform=${platform}&deviceId=${deviceId}`);
+    const ws = new WebSocket(`${schema}//echojourney.yuanfudao.biz/echojourney/ws/${scene}/${sessionId}?platform=${platform}&deviceId=${deviceId}`);
     setSocket(ws);
     ws.onopen = () => {
       console.log('WebSocket connected');
