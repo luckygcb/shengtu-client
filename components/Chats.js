@@ -1,26 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { List, Avatar } from 'react-native-paper';
-import { useAssistantAvatar } from '../hooks/useAssistantAvatar';
+import { List, Avatar, Badge } from 'react-native-paper';
+import { useChats } from '../hooks/useChats';
 
 const ChatsComponent = ({ navigation }) => {
-
-  const { getAvatar } = useAssistantAvatar();
-
-  const chats = [
-    {
-      name: '瓜瓜',
-      description: '今天有什么想聊的话题？',
-      avatar: getAvatar('talk'),
-      scene: 'talk',
-    },
-    {
-      name: '斗斗',
-      description: '奖励你一大挑战？',
-      avatar: getAvatar('exercises'),
-      scene: 'exercises',
-    },
-  ];
+  const { chats } = useChats();
 
   return (
     <View
@@ -41,11 +25,21 @@ const ChatsComponent = ({ navigation }) => {
             <List.Item
               key={index}
               title={chat.name}
-              description={chat.description}
+              description={<Text>{chat.description}</Text>}
               style={{
                 paddingLeft: 24,
               }}
-              left={props => <Avatar.Image size={44} source={chat.avatar} />}
+              left={props => (
+                <View>
+                  <Avatar.Image size={44} source={chat.avatar} />
+                  {chat.update && (
+                    <Badge
+                      size={10}
+                      style={styles.badge}
+                    />
+                  )}
+                </View>
+              )}
               right={props => <List.Icon {...props} icon="chevron-right" />}
               onPress={() => navigation.navigate('Chat', { name: chat.name, scene: chat.scene })}
             />
@@ -70,6 +64,12 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     backgroundColor: '#ddd',
+  },
+  badge: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#21d75f',
   }
 });
 
