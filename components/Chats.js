@@ -31,7 +31,7 @@ const ChatsComponent = ({ navigation }) => {
             style={{
               paddingLeft: 24,
             }}
-            left={props => <Avatar.Image size={44} source={require('../assets/images/assistant.jpg')} />}
+            left={props => <Avatar.Image size={44} source={require('../assets/images/guagua.jpg')} />}
             right={props => <List.Icon {...props} icon="chevron-right" />}
             onPress={() => navigation.navigate('Chat', { name: '瓜瓜', scene: 'talk' })}
           />
