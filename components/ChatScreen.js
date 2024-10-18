@@ -23,7 +23,7 @@ export default function ChatScreen() {
   const [correctVideoUri, setCorrectVideoUri] = useState('');
   const [videoModalVisible, setVideoModalVisible] = useState(false);
   const expectedSentenceRef = useRef('');
-  const currentRoundRef = useRef([]);
+  const messageIdSeedRef = useRef(0);
   const flatListRef = useRef();
   const [permissionResponse, requestPermission] = Audio.usePermissions();
   const route = useRoute();
@@ -37,30 +37,40 @@ export default function ChatScreen() {
   };
 
   const pushMessage = (message) => {
-    if (message.sender === 'assistant' && message.type !== 'loading') {
-      currentRoundRef.current.push(message);
-    } else {
-      currentRoundRef.current = [];
-    }
-
     setMessages(prevMessages => {
+      let result = [...prevMessages];
+      const lastMessageGroup = result[result.length - 1];
       
-      const result = prevMessages.filter(m => m.type !== 'loading');
+      // Remove any existing loading messages
+      if (lastMessageGroup && lastMessageGroup.sender === 'assistant') {
+        lastMessageGroup.messages = lastMessageGroup.messages.filter(m => m.type !== 'loading');
+      }
+  
       const newMessage = {
-        id: prevMessages.length ? prevMessages[prevMessages.length - 1].id + 1 : 0,
-        isNewRound: message.sender === 'user' || currentRoundRef.current.length === 1 || message.type === 'loading',
+        id: messageIdSeedRef.current++,
         ...message,
       };
-      result.push(newMessage);
 
-      // 如果当前消息是用户消息，则推送一个 loading 消息
-      if (newMessage.sender === 'user') {
-        result.push({ sender: 'assistant', type: 'loading', isNewRound: true, id: `loading-${newMessage.id}` });
+      if (lastMessageGroup && lastMessageGroup.sender === newMessage.sender) {
+        // If the last message has the same sender, merge the new message
+        lastMessageGroup.messages.push(newMessage);
+      } else {
+        // Otherwise, create a new group for this sender
+        result.push({
+          id: newMessage.id,
+          sender: newMessage.sender,
+          messages: [newMessage],
+        });
       }
 
       return result;
     });
-  }
+
+    // If the new message is from the user, add a loading message for the assistant
+    if (message.sender === 'user') {
+      pushMessage({ sender: 'assistant', type: 'loading' });
+    }
+  };
 
   const handleMessage = ({ type, message }) => {
     console.log('receive message', type, message);
@@ -170,7 +180,7 @@ export default function ChatScreen() {
     console.log('Recording stopped and stored at', uri);
     
     // Add the new recording to the messages list
-    pushMessage({ id: Date.now().toString(), sender: 'user', type: 'audio', uri: uri });
+    pushMessage({ sender: 'user', type: 'audio', uri: uri });
 
     if (/blob:/.test(uri)) {
       const uint8Array = await blobUrlToUint8Array(uri);
@@ -207,7 +217,7 @@ export default function ChatScreen() {
   }
 
   const renderMessage = ({ item }) => {
-    return <ChatMessage message={item} onPressCorrectVideo={handlePressCorrectVideo} />;
+    return <ChatMessage sender={item.sender} messages={item.messages} onPressCorrectVideo={handlePressCorrectVideo} />;
   };
 
   const getStatusText = () => {
@@ -232,7 +242,7 @@ export default function ChatScreen() {
         flatListRef.current.scrollToEnd();
       }, 100);
     }
-  }, [messages.length]);
+  }, [messages]);
 
   // iOS 中页面高度变化，需要滚动到页面顶部
   useEffect(() => {

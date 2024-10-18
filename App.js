@@ -3,11 +3,12 @@ import * as Sentry from '@sentry/react-native';
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { PaperProvider } from 'react-native-paper';
+import { PaperProvider, Avatar, Text } from 'react-native-paper';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabBarComponent from './components/TabBar';
 import ChatScreen from './components/ChatScreen';
+import ChatHeaderTitle from './components/ChatHeaderTitle';
 
 Sentry.init({
   dsn: 'https://010b7f4a3a360ccedd493320b4c5d498@o4508126757978112.ingest.us.sentry.io/4508126761582592',
@@ -26,6 +27,7 @@ function HomeScreen({ navigation }) {
 }
 
 export default Sentry.wrap(function App() {
+
   return (
     <PaperProvider
       theme={{
@@ -41,7 +43,11 @@ export default Sentry.wrap(function App() {
           />
           <Stack.Screen
             name="Chat"
-            options={({ route }) => ({ title: route.params.name })}
+            options={
+              ({ route }) => ({
+                headerTitle: () => <ChatHeaderTitle route={route} />,
+              })
+            }
             component={ChatScreen}
           />
         </Stack.Navigator>

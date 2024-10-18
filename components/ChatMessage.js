@@ -7,35 +7,26 @@ import AudioMessage from './AudioMessage';
 import Volume from './Volume';
 import Loading from './Loading';
 import { usePlayAudio } from '../hooks/usePlayAudio';
-import { useAssistantAvatar } from '../hooks/useAssistantAvatar';
 
-const ChatMessage = ({ message, onPressCorrectVideo }) => {
-  const { avatar } = useAssistantAvatar();
+const ChatMessage = ({ sender, messages, onPressCorrectVideo }) => {
 
   return (
     <View
       style={[
         styles.messageItem,
-        message.sender === 'user' ? styles.userMessage : styles.assistantMessage,
-        {
-          marginTop: message.isNewRound ? 27 : 0,
-        }
+        sender === 'user' ? styles.userMessage : styles.assistantMessage,
       ]}
     >
-      <View style={styles.avatarContainer}>
-        {message.isNewRound ? (
-          message.sender === 'assistant' ? (
-            <Avatar.Image size={28} source={avatar} />
-          ) : (
-            <Icon source="account" size={28} />
-          )
-        ) : null}
-      </View>
-      <View style={[styles.messageContent, {
-        flexDirection: message.sender === 'assistant' ? 'row' : 'row-reverse'
-      }]}>
-        <ChatMessageContent message={message} onPressCorrectVideo={onPressCorrectVideo} />
-      </View>
+      {messages.map((message) => (
+        <View
+          key={message.id}
+          style={[styles.messageContent, {
+            flexDirection: message.sender === 'assistant' ? 'row' : 'row-reverse'
+          }]}
+        >
+          <ChatMessageContent message={message} onPressCorrectVideo={onPressCorrectVideo} />
+        </View>
+      ))}
     </View>
   )
 }
@@ -94,7 +85,7 @@ const ChatMessageContent = ({ message, onPressCorrectVideo }) => {
       <View style={styles.correntVideosMessage}>
         {message.correctVideos.map(correctVideo => (
           <Button
-            key={correctVideo.id}
+            key={correctVideo.mp4Url}
             mode="outlined"
             style={styles.correctVideoButton}
             onPress={() => {
@@ -108,7 +99,7 @@ const ChatMessageContent = ({ message, onPressCorrectVideo }) => {
     );
   } else if (message.type === 'loading') {
     return (
-      <View style={styles.loadingMessage}>
+      <View>
         <Loading />
       </View>
     );
@@ -118,28 +109,27 @@ const ChatMessageContent = ({ message, onPressCorrectVideo }) => {
 const styles = StyleSheet.create({
   messageItem: {
     marginVertical: 5,
+    marginTop: 27,
+    marginHorizontal: 14,
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     gap: 10,
   },
-  avatarContainer: {
-    width: 28,
-    height: 44,
-    paddingVertical: 8
-  },
   messageContent: {
-    flex: 1,
+    width: '100%',
   },
   assistantMessage: {
-    flexDirection: 'row',
-    paddingRight: 54
+    flexDirection: 'column',
+    backgroundColor: '#f8f9fa',
+    borderRadius: 12,
+    padding: 14,
+    gap: 10,
   },
   userMessage: {
     flexDirection: 'row-reverse',
     paddingLeft: 54
   },
   textMessage: {
-    paddingTop: 13,
     fontSize: 16,
     lineHeight: 22,
   },
@@ -164,9 +154,6 @@ const styles = StyleSheet.create({
   },
   spellWord: {
     fontSize: 16,
-  },
-  loadingMessage: {
-    paddingTop: 15,
   },
   playButton: {
     width: 34,
