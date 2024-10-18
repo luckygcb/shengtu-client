@@ -1,10 +1,14 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { useRoute } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 import { useAssistantAvatar } from './useAssistantAvatar';
 import { getDeviceId } from '../utils/device';
+
 
 export function useChats () {
   const [chats, setChats] = useState([]);
   const { getAvatar } = useAssistantAvatar();
+  const router = useRoute();
 
   const fetchChats = async () => {
     const deviceId = await getDeviceId();
@@ -18,9 +22,14 @@ export function useChats () {
     setChats(chats);
   };
 
-  useEffect(() => {
-    fetchChats();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      if (router.name === 'Home') {
+        fetchChats();
+      }
+
+    }, [router.name])
+  );
 
   return {
     chats,
