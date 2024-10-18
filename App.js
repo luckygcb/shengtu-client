@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabBarComponent from './components/TabBar';
 import ChatScreen from './components/ChatScreen';
 import ChatHeaderTitle from './components/ChatHeaderTitle';
+import ChatFooter from './components/ChatFooter';
 
 Sentry.init({
   dsn: 'https://010b7f4a3a360ccedd493320b4c5d498@o4508126757978112.ingest.us.sentry.io/4508126761582592',
