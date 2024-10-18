@@ -117,7 +117,7 @@ const ChatFooter = ({ onSendText, onSendAudio, recordState, setRecordState }) =>
           style={styles.textInput}
           underlineColor='transparent'
           activeUnderlineColor='transparent'
-          // right={<TextInput.Icon icon="send" color="#181a1f" onPress={handleSendText} />}
+          right={<TextInput.Icon icon="send" color="#181a1f" onPress={handleSendText} />}
           onKeyPress={handleKeyPress}
         />
       )}
