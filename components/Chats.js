@@ -30,7 +30,9 @@ const ChatsComponent = ({ navigation }) => {
                 paddingLeft: 24,
               }}
               left={props => (
-                <View>
+                <View
+                  style={styles.avatarWrapper}
+                >
                   <Avatar.Image size={44} source={chat.avatar} />
                   {chat.update && (
                     <Badge
@@ -64,6 +66,10 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     backgroundColor: '#ddd',
+  },
+  avatarWrapper: {
+    width: 44,
+    height: 44,
   },
   badge: {
     position: 'absolute',
