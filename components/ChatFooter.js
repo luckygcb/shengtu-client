@@ -37,7 +37,7 @@ const ChatFooter = ({ onSendText, onSendAudio, recordState, setRecordState }) =>
 
       // 已经松开了
       if (!isPressingRef.current) {
-        await recording.stopAndUnloadAsync();
+        recording.stopAndUnloadAsync();
         setRecordState('');
         return;
       }
@@ -183,7 +183,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     flex: 1,
-    height: 40,
+    height: 60,
     borderRadius: 5,
     marginRight: 40,
     backgroundColor: '#fff',
