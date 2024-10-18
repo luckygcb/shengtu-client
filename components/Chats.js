@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import { List, Avatar, Badge } from 'react-native-paper';
+import { List, Avatar, Badge, ActivityIndicator } from 'react-native-paper';
 import { useChats } from '../hooks/useChats';
 
 const ChatsComponent = ({ navigation }) => {
-  const { chats } = useChats();
+  const { chats, loading } = useChats();
 
   return (
     <View
@@ -13,13 +13,22 @@ const ChatsComponent = ({ navigation }) => {
       <Text
         style={styles.text}
       >
-        Chats
+        对话
       </Text>
       <ScrollView
         style={{
           flex: 1,
         }}
       >
+        {
+          loading && (
+            <ActivityIndicator
+              animating={true}
+              color="rgba(127,85,224,1)"
+              style={styles.loading}
+            />
+          )
+        }
         <List.Section>
           {chats.map((chat, index) => (
             <List.Item
@@ -56,6 +65,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 50,
+  },
+  loading: {
+    marginTop: 20,
   },
   text: {
     fontSize: 20,

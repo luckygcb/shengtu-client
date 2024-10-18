@@ -7,19 +7,29 @@ import { getDeviceId } from '../utils/device';
 
 export function useChats () {
   const [chats, setChats] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const { getAvatar } = useAssistantAvatar();
   const router = useRoute();
 
   const fetchChats = async () => {
-    const deviceId = await getDeviceId();
-    const response = await fetch(`https://echojourney.yuanfudao.biz/echojourney/titles?deviceId=${deviceId}`);
-    const chats = await response.json();
+    setLoading(true);
+    setChats([]);
+    try {
+      const deviceId = await getDeviceId();
+      const response = await fetch(`https://echojourney.yuanfudao.biz/echojourney/titles?deviceId=${deviceId}`);
+      const chats = await response.json();
+  
+      chats.forEach(chat => {
+        chat.avatar = getAvatar(chat.scene);
+      });
+  
+      setChats(chats);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
 
-    chats.forEach(chat => {
-      chat.avatar = getAvatar(chat.scene);
-    });
-
-    setChats(chats);
   };
 
   useFocusEffect(
@@ -33,5 +43,6 @@ export function useChats () {
 
   return {
     chats,
+    loading
   };
 }
